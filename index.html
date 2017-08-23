@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Stencila</title>
+    <link rel="stylesheet" type="text/css" href="/node_modules/stencila/build/stencila.css">
+  </head>
+  <body>
+
+    <div id="spinner-container">
+      <div class="spinner">
+        <div class="double-bounce1"></div>
+        <div class="double-bounce2"></div>
+      </div>
+    </div>
+    <style>
+      #spinner-container {
+        position: fixed;
+        top: 30%;
+        width: 100%;
+      }
+
+      .spinner {
+        position: relative;
+        width: 60px;
+        height: 60px;
+        margin: 0 auto;
+      }
+
+      .double-bounce1, .double-bounce2 {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background-color: #12ea10;
+        opacity: 0.6;
+        position: absolute;
+        top: 0;
+        left: 0;
+        
+        -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+        animation: sk-bounce 2.0s infinite ease-in-out;
+      }
+
+      .double-bounce2 {
+        -webkit-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+      }
+
+      @-webkit-keyframes sk-bounce {
+        0%, 100% { -webkit-transform: scale(0.0) }
+        50% { -webkit-transform: scale(1.0) }
+      }
+
+      @keyframes sk-bounce {
+        0%, 100% { 
+          transform: scale(0.0);
+          -webkit-transform: scale(0.0);
+        } 50% { 
+          transform: scale(1.0);
+          -webkit-transform: scale(1.0);
+        }
+      }
+    </style>
+
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/brace.min.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/d3.min.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/katex/katex.min.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/vega.min.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/vega-lite.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/substance.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/stencila-mini.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/lib/unified-bundle.min.js"></script>
+    <script type="text/javascript" src="/node_modules/stencila/build/stencila.js"></script>
+
+    <script type="text/javascript">
+      window.addEventListener('load', () => {
+        window.documentPage = stencila.DocumentPage.mount({
+          address: stencila.getQueryStringParam('address'),
+          host: new stencila.Host({
+            // Capture origin as potential peer
+            origin: window.location.origin,
+            // Initial peers can be set in an environment variable or query parameter
+            peers: (stencila.getQueryStringParam('peers') || window.STENCILA_PEERS || '').split(','),
+            // Peer discovery defaults to false but its frequency (in seconds) can be set in an environment variable
+            discover: window.STENCILA_DISCOVER ? parseFloat(window.STENCILA_DISCOVER) : false
+          })
+        }, window.document.body);
+
+        var spinner = document.getElementById('spinner-container');
+        spinner.parentNode.removeChild(spinner);
+
+        function onKeyDown(e) {
+          // CTRL+S
+          if (e.ctrlKey && e.keyCode === 83) {
+            console.info('saving');
+            window.documentPage.save();
+            e.preventDefault();
+          }
+        }
+        document.addEventListener('keydown', onKeyDown, false);
+      });
+    </script>
+
+  </body>
+</html>

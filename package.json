@@ -1,0 +1,33 @@
+{
+  "name": "stencila-open",
+  "version": "0.27.0",
+  "description": "Stencila on the web",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stencila/open.git"
+  },
+  "keywords": [
+    "data",
+    "documents",
+    "sheets",
+    "contexts",
+    "sessions",
+    "reproducibility",
+    "science"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/stencila/open/issues"
+  },
+  "homepage": "https://github.com/stencila/open#readme",
+  "dependencies": {
+    "stencila": "stencila/stencila#develop"
+  },
+  "devDependencies": {
+    "http-server": "^0.10.0"
+  },
+  "scripts": {
+    "start": "http-server -a 127.0.0.1"
+  }
+}
