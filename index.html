@@ -72,21 +72,43 @@
     <script type="text/javascript" src="/node_modules/stencila/build/stencila.js"></script>
 
     <script type="text/javascript">
-      window.addEventListener('load', () => {
-        window.documentPage = stencila.DocumentPage.mount({
-          address: stencila.getQueryStringParam('address'),
-          host: new stencila.Host({
-            // Capture origin as potential peer
-            origin: window.location.origin,
-            // Initial peers can be set in an environment variable or query parameter
-            peers: (stencila.getQueryStringParam('peers') || window.STENCILA_PEERS || '').split(','),
-            // Peer discovery defaults to false but its frequency (in seconds) can be set in an environment variable
-            discover: window.STENCILA_DISCOVER ? parseFloat(window.STENCILA_DISCOVER) : false
-          })
-        }, window.document.body);
 
-        var spinner = document.getElementById('spinner-container');
-        spinner.parentNode.removeChild(spinner);
+      // Create an in-memory file to be used if no address is specified
+      window.STENCILA_MEMORY_STORER_FILES = {'blank.md': `
+# Welcome to Stencila!
+
+This is an **experimental** web deployment of [Stencila](https://stenci.la). Please see the notes on usage at https://github.com/stencila/open. For a less experimental way to use Stencila, please download [Stencila Desktop](https://github.com/stencila/desktop).
+
+If you are arrived here via the Stencila add-in for R studio of by using \`stencila:::open(...)\` from the R command line, then something went wrong :(. Please see the notes [here](https://github.com/stencila/open#use). Don't hesitate to ask for help at https://community.stenci.la.
+
+Having said all that, feel free to have a play! You can write in the document, create Mini or Javascript code cells. You just won't be able to save your document or use external languages - unless you specify a peer with those capabilities (see the notes).
+      `}
+
+      window.addEventListener('load', () => {
+        // Address parameter with fallback to blank.md above
+        var address = stencila.getQueryStringParam('address') || 'memory://blank.md'
+
+        // Peers parameter
+        var peers = stencila.getQueryStringParam('peers')
+        if (peers) peers = peers.split(',')
+        else peers = []
+
+        // Create and initialise the host
+        let host = new stencila.Host({
+          peers: peers,
+          discover: false
+        })
+        host.initialize().then(() => {
+          // Mount the page
+          window.documentPage = stencila.DocumentPage.mount({
+            address: address,
+            host: host
+          }, window.document.body)
+
+          // Remove the spinner
+          var spinner = document.getElementById('spinner-container');
+          spinner.parentNode.removeChild(spinner);
+        })
 
         function onKeyDown(e) {
           // CTRL+S

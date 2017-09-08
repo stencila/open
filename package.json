@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/stencila/open#readme",
   "dependencies": {
-    "stencila": "stencila/stencila#develop"
+    "stencila": "stencila/stencila#alt-storers"
   },
   "devDependencies": {
     "http-server": "^0.10.0"
